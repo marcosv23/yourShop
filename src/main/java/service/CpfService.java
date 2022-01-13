@@ -1,21 +1,32 @@
 package service;
 
-public class Cpf {
+import jakarta.validation.constraints.NotNull;
+
+public class CpfService {
     private static final int CPF_LENGTH = 11;
     private static final int ELEVEN_CONSTANT = 11;
 
 
-    public boolean validate(String rawCPF) {
-        if (rawCPF == null) return false;
-        String cpf = unmaskCPF(rawCPF);
-        return cpf.length() == CPF_LENGTH && !hasAllSameDigits(cpf);
+    public boolean validate(@NotNull String rawCPF) {
+        String cpf = cleanCpf(rawCPF);
+        if (cpf.length() != CPF_LENGTH || hasAllSameDigits(cpf)) return false;
+        var firstDigit = calculateDigit(rawCPF, 10);
+        var secondDigit = calculateDigit(rawCPF, 11);
+        return compareDigits(firstDigit, secondDigit, cpf);
     }
 
     public boolean validateLength(String rawCPF) {
         return rawCPF.length() == CPF_LENGTH;
     }
 
-    public String unmaskCPF(String rawCPF) {
+    public boolean compareDigits(int dg1, int dg2, String cpf) {
+        var digit1 = String.valueOf(dg1);
+        var digit2 = String.valueOf(dg2);
+        var verifierDigits = digit1.concat(digit2);
+        return cpf.substring(9, 11).equals(verifierDigits);
+    }
+
+    public String cleanCpf(String rawCPF) {
         return rawCPF.replace(".", "").replace("-", "");
     }
 
@@ -34,7 +45,7 @@ public class Cpf {
     }
 
     public int calculateDigit(String rawCpf, int factor) {
-        var cpf = unmaskCPF(rawCpf);
+        var cpf = cleanCpf(rawCpf);
         var total = 0;
         for (char digit : cpf.toCharArray()) {
             if (factor > 1) total += getIntFromString(digit) * factor--;
