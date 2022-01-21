@@ -2,6 +2,7 @@ package service;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import utility.FreightCalculatorUtils;
 
 import java.math.BigDecimal;
 
@@ -34,24 +35,24 @@ public class OrderItemTest {
 
     @Test
     public void shouldCalcOrderItemVolume() {
-        assertEquals(new BigDecimal("0.003"), item1.calcVolume());
+        assertEquals(new BigDecimal("0.003"), item1.getVolume());
     }
 
     @Test
     public void shouldCalcOrderItemDensity() {
-        assertEquals(new BigDecimal("333.3"), item1.calcDensity());
+        assertEquals(new BigDecimal("333.3"), item1.getDensity());
     }
 
     @Test
     public void shouldCalcMinimalShipping() {
         var distanceKm = new BigDecimal("1000");
-        assertEquals(new BigDecimal("10.00"), item1.calcShippingValue(distanceKm));
+        assertEquals(new BigDecimal("10.00"), FreightCalculatorUtils.calculate(item1, distanceKm));
     }
 
     @Test
     public void shouldCalcNormalShipping() {
         var distanceKm = new BigDecimal("1000");
-        assertEquals(new BigDecimal("30.00"), item2.calcShippingValue(distanceKm));
+        assertEquals(new BigDecimal("30.00"), FreightCalculatorUtils.calculate(item2, distanceKm));
     }
 
 }

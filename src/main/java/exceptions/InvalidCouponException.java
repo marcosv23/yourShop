@@ -1,7 +1,7 @@
 package exceptions;
 
 public class InvalidCouponException extends RuntimeException {
-    private static final String MESSAGE = "There is not permitted to make an order with invalid CPF";
+    private static final String MESSAGE = "Coupon is invalid or expired";
 
     public InvalidCouponException() {
         super(MESSAGE);

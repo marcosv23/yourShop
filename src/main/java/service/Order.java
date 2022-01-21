@@ -4,23 +4,29 @@ import exceptions.InvalidCouponException;
 import exceptions.InvalidCpfException;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import integrations.services.CouponCheckerAPI;
 import lombok.*;
+import utility.FreightCalculatorUtils;
 
 @Getter
 @Setter
 public class Order {
     private String cpf;
     private String description;
-    private Coupon coupon;
     private BigDecimal totalPrice;
     private List<OrderItem> items;
     private BigDecimal orderShipping;
     private static final CpfService cpfService = new CpfService();
-    private static final CouponCheckerAPI couponCheckerAPI = new CouponCheckerAPI();
+
+    public Order(String cpf) {
+        if (validateCpf(cpf)) {
+            this.cpf = cpf;
+        }
+        this.items = new ArrayList<>();
+    }
 
     public Order(String cpf, String description) {
         if (validateCpf(cpf)) {
@@ -34,15 +40,13 @@ public class Order {
         this.items.add(item);
     }
 
-    public void addCoupon(Coupon coupon) {
-        if (validateCoupon(coupon)) {
-            this.coupon = coupon;
-        } else throw new InvalidCouponException();
+    public void addCoupon(Coupon coupon, Instant date) {
+        if (!validateCoupon(coupon, date)) throw new InvalidCouponException();
         totalPrice = calcPriceWithDiscount(coupon);
     }
 
-    public boolean validateCoupon(Coupon coupon) {
-        return couponCheckerAPI.isValidCoupon(String.valueOf(coupon));
+    public boolean validateCoupon(Coupon coupon, Instant date) {
+        return Coupon.isValidCoupon(coupon, date);
     }
 
     public BigDecimal calcPrice() {
@@ -51,7 +55,7 @@ public class Order {
 
     public BigDecimal calcPriceWithDiscount(Coupon coupon) {
         totalPrice = calcPrice();
-        var discount = totalPrice.multiply(coupon.getPercentage());
+        var discount = Coupon.calculateDiscount(totalPrice, coupon);
         return totalPrice.subtract(discount);
     }
 
@@ -60,13 +64,10 @@ public class Order {
         else return true;
     }
 
-    public BigDecimal calcOrderShipping(BigDecimal distanceKm) {
-        orderShipping = items.stream().map(item -> item.calcShippingValue(distanceKm)).reduce(BigDecimal.valueOf(0), BigDecimal::add);
-        return orderShipping;
+    public BigDecimal calcFreight(BigDecimal distanceKm) {
+        return items
+                .stream()
+                .map(item -> FreightCalculatorUtils.calculate(item, distanceKm))
+                .reduce(BigDecimal.valueOf(0), BigDecimal::add);
     }
-
-    public Order(String cpf) {
-        this.cpf = cpf;
-    }
-
 }

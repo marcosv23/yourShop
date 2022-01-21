@@ -19,10 +19,8 @@ public class OrderItem {
     private BigDecimal price;
     private BigDecimal volume;
     private BigDecimal density;
-    private BigDecimal shippingValue;
+    private BigDecimal freight;
     private static final BigDecimal FACTOR_CONVERSION_CM3_TOM3 = new BigDecimal("1000000");
-    private static final BigDecimal FACTOR_TO_DIVIDE_DENSITY = new BigDecimal("100");
-    private static final BigDecimal MINIMAL_SHIPPING_VALUE = new BigDecimal("10.00");
 
 
     /**
@@ -49,43 +47,23 @@ public class OrderItem {
         return price = unitPrice.multiply(BigDecimal.valueOf(amount));
     }
 
-    public BigDecimal calcVolume() {
+    public BigDecimal getVolume() {
         volume = toM3(width.multiply(height).multiply(depth));
         return volume;
     }
 
-    public BigDecimal toM3(BigDecimal volumeInC3) {
-        return volumeInC3.divide(FACTOR_CONVERSION_CM3_TOM3);
-    }
-
-    public BigDecimal calcShippingValue(BigDecimal distanceKm) {
-        volume = calcVolume();
-        density = calcDensity();
-        var normalValue = shippingCalcExpression(distanceKm);
-        return shippingValue = receivesMinimalShipping(normalValue) ? MINIMAL_SHIPPING_VALUE : normalValue;
-    }
-
-    public BigDecimal shippingCalcExpression(BigDecimal distanceKm) {
-        return distanceKm.multiply(volume).multiply(divideDensityByFactor())
-                .setScale(2, RoundingMode.DOWN);
-    }
-
-    public BigDecimal divideDensityByFactor() {
-        return density.divide(FACTOR_TO_DIVIDE_DENSITY, 1, RoundingMode.DOWN);
-    }
 
     /**
      * volume must be in m³ and weight must be in kg
      *
      * @return the density in kg/m³
      */
-    public BigDecimal calcDensity() {
-        return density = weight.divide(calcVolume(), 1, RoundingMode.DOWN);
+    public BigDecimal getDensity() {
+        return density = weight.divide(getVolume(), 1, RoundingMode.DOWN);
     }
 
-    public boolean receivesMinimalShipping(BigDecimal supposedValue) {
-        return supposedValue.compareTo(MINIMAL_SHIPPING_VALUE) < 0;
+    public BigDecimal toM3(BigDecimal volumeInC3) {
+        return volumeInC3.divide(FACTOR_CONVERSION_CM3_TOM3);
     }
-
 
 }
