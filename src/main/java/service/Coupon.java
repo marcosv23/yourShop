@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Map;
 
+import static utility.DateUtils.getInstantFromString;
+
 
 @Getter
 @AllArgsConstructor
@@ -35,9 +37,6 @@ public enum Coupon {
         return date.compareTo(result.getExpirationDate()) <= 0;
     }
 
-    public static Instant getInstantFromString(String strDate) {
-        return LocalDateTime.parse(strDate).toInstant(ZoneOffset.UTC);
-    }
 
     public static BigDecimal calculateDiscount(BigDecimal price, Coupon coupon) {
         return price.multiply(coupon.getPercentage());

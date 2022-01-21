@@ -18,16 +18,16 @@ public class FreightCalculatorUtils {
         return receivesMinimalFreight(normalValue) ? MINIMAL_SHIPPING_VALUE : normalValue;
     }
 
-    public static BigDecimal freightCalcFormula(OrderItem item, BigDecimal distanceKm) {
+    private static BigDecimal freightCalcFormula(OrderItem item, BigDecimal distanceKm) {
         return distanceKm.multiply(item.getVolume()).multiply(divideDensityByFactor(item.getDensity()))
                 .setScale(2, RoundingMode.DOWN);
     }
 
-    public static boolean receivesMinimalFreight(BigDecimal supposedValue) {
+    private static boolean receivesMinimalFreight(BigDecimal supposedValue) {
         return supposedValue.compareTo(MINIMAL_SHIPPING_VALUE) < 0;
     }
 
-    public static BigDecimal divideDensityByFactor(BigDecimal density) {
+    private static BigDecimal divideDensityByFactor(BigDecimal density) {
         return density.divide(FACTOR_TO_DIVIDE_DENSITY, 1, RoundingMode.DOWN);
     }
 }

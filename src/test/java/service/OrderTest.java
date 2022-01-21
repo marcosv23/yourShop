@@ -3,17 +3,8 @@ package service;
 import exceptions.InvalidCouponException;
 import exceptions.InvalidCpfException;
 
-
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
-import java.util.TimeZone;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -57,19 +48,20 @@ public class OrderTest {
     }
 
     @Test
-    public void shouldCalcDiscountFor10OFFCoupon() throws ParseException {
+    public void shouldCalcDiscountFor10OFFCoupon() {
         assertEquals(0, new BigDecimal("360.0").compareTo(order.calcPriceWithDiscount(Coupon.GET10OFF)));
     }
 
     @Test
-    public void shouldCalcDiscountFor15OFFCoupon() throws ParseException{
+    public void shouldCalcDiscountFor15OFFCoupon() {
         assertEquals(0, new BigDecimal("340").compareTo(order.calcPriceWithDiscount(Coupon.GET15OFF)));
     }
 
     @Test
     public void shouldNotValidExpiredCoupon() {
         Exception exception = assertThrows(InvalidCouponException.class, () -> {
-            order.addCoupon(Coupon.GET10OFF, DateUtils.getInstantFromString("2022-02-25T00:11:00"));
+            var date = DateUtils.getInstantFromString("2022-02-25T00:11:00");
+            order.addCoupon(Coupon.GET10OFF, date);
         });
         assertTrue(exception.getMessage().contains(INVALID_COUPON_MESSAGE));
     }
