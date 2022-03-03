@@ -1,8 +1,8 @@
-package service;
+package unit.domain.entity;
 
+import domain.entity.OrderItem;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import utility.FreightCalculatorUtils;
 
 import java.math.BigDecimal;
 
@@ -29,17 +29,17 @@ public class OrderItemTest {
     }
 
     @Test
-    public void shouldCalcTotalPrice() {
-        assertEquals(new BigDecimal(30), item1.getPrice());
+    void shouldCalcTotalPrice() {
+        assertEquals(BigDecimal.valueOf(30.0), item1.getPrice());
     }
 
     @Test
-    public void shouldCalcVolume() {
+    void shouldCalcVolume() {
         assertEquals(new BigDecimal("0.003"), item1.getVolume());
     }
 
     @Test
-    public void shouldCalcDensity() {
+    void shouldCalcDensity() {
         assertEquals(new BigDecimal("333.3"), item1.getDensity());
     }
 

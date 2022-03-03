@@ -1,5 +1,6 @@
-package service;
+package unit.domain.entity;
 
+import domain.entity.CpfService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

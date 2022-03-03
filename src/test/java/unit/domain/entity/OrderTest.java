@@ -1,5 +1,8 @@
-package service;
+package unit.domain.entity;
 
+import domain.entity.Coupon;
+import domain.entity.Order;
+import domain.entity.OrderItem;
 import exceptions.InvalidCouponException;
 import exceptions.InvalidCpfException;
 
@@ -12,7 +15,7 @@ import utility.DateUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class OrderTest {
+class OrderTest {
     private static Order order;
     private static Order order2;
     private static final BigDecimal DISTANCE_1000_KM = new BigDecimal("1000");
@@ -23,24 +26,23 @@ public class OrderTest {
     private static final String ZONE = "America/Sao_Paulo";
 
     @Test
-    public void shouldCreateEmptyOrderWithValidCPF() {
+    void shouldCreateEmptyOrderWithValidCPF() {
         var order = new Order(VALID_CPF);
         assertTrue(order.validateCpf(order.getCpf()));
     }
 
     @Test
-    public void shouldCreateThreeItemsOrderWithValidCPF() {
+    void shouldCreateThreeItemsOrderWithValidCPF() {
         assertTrue(order.validateCpf(order.getCpf()));
     }
 
-
     @Test
-    public void shouldCalcOrderPrice() {
-        assertEquals(new BigDecimal("400"), order.calcPrice());
+    void shouldCalcOrderPrice() {
+        assertEquals(BigDecimal.valueOf(400.0), order.calcPrice());
     }
 
     @Test
-    public void shouldNotCreateOrderWithInValidCPF() {
+    void shouldNotCreateOrderWithInValidCPF() {
         Exception exception = assertThrows(InvalidCpfException.class, () -> {
             new Order(INVALID_CPF, "Music items");
         });
@@ -48,17 +50,17 @@ public class OrderTest {
     }
 
     @Test
-    public void shouldCalcDiscountFor10OFFCoupon() {
+    void shouldCalcDiscountFor10OFFCoupon() {
         assertEquals(0, new BigDecimal("360.0").compareTo(order.calcPriceWithDiscount(Coupon.GET10OFF)));
     }
 
     @Test
-    public void shouldCalcDiscountFor15OFFCoupon() {
+    void shouldCalcDiscountFor15OFFCoupon() {
         assertEquals(0, new BigDecimal("340").compareTo(order.calcPriceWithDiscount(Coupon.GET15OFF)));
     }
 
     @Test
-    public void shouldNotValidExpiredCoupon() {
+    void shouldNotValidExpiredCoupon() {
         Exception exception = assertThrows(InvalidCouponException.class, () -> {
             var date = DateUtils.getInstantFromString("2022-02-25T00:11:00");
             order.addCoupon(Coupon.GET10OFF, date);
@@ -67,7 +69,7 @@ public class OrderTest {
     }
 
     @Test
-    public void shouldValidCoupon() throws ParseException {
+    void shouldValidCoupon() {
         var coupon = Coupon.GET10OFF;
         var date = DateUtils.getInstantFromString("2022-02-25T00:00:00");
         order.addCoupon(coupon, date);
@@ -75,12 +77,12 @@ public class OrderTest {
     }
 
     @Test
-    public void shouldCalcOrderShippingAndReturnMinimalShippingValue() {
+    void shouldCalcOrderShippingAndReturnMinimalShippingValue() {
         assertEquals(new BigDecimal("30.00"), order.calcFreight(DISTANCE_1000_KM));
     }
 
     @Test
-    public void shouldCalcOrderShippingAndReturnNormalShippingValue() {
+    void shouldCalcOrderShippingAndReturnNormalShippingValue() {
         assertEquals(new BigDecimal("10.00"), order2.calcFreight(DISTANCE_1000_KM));
     }
 

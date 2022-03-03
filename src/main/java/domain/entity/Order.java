@@ -1,4 +1,4 @@
-package service;
+package domain.entity;
 
 import exceptions.InvalidCouponException;
 import exceptions.InvalidCpfException;
@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.*;
-import utility.FreightCalculatorUtils;
 
 @Getter
 @Setter
@@ -67,7 +66,7 @@ public class Order {
     public BigDecimal calcFreight(BigDecimal distanceKm) {
         return items
                 .stream()
-                .map(item -> FreightCalculatorUtils.calculate(item, distanceKm))
+                .map(item -> FreightCalculator.calculate(item, distanceKm))
                 .reduce(BigDecimal.valueOf(0), BigDecimal::add);
     }
 }

@@ -1,16 +1,13 @@
-package utility;
-
-import service.OrderItem;
+package domain.entity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class FreightCalculatorUtils {
-
+public class FreightCalculator {
     private static final BigDecimal FACTOR_TO_DIVIDE_DENSITY = new BigDecimal("100");
     private static final BigDecimal MINIMAL_SHIPPING_VALUE = new BigDecimal("10.00");
 
-    private FreightCalculatorUtils() {
+    private FreightCalculator() {
     }
 
     public static BigDecimal calculate(OrderItem item, BigDecimal distanceKm) {

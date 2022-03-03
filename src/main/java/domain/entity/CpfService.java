@@ -1,4 +1,4 @@
-package service;
+package domain.entity;
 
 import jakarta.validation.constraints.NotNull;
 

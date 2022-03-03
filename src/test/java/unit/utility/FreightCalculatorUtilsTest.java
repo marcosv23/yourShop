@@ -1,8 +1,10 @@
-package utility;
+package unit.utility;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import service.OrderItem;
+import domain.entity.OrderItem;
+import domain.entity.FreightCalculator;
 
 import java.math.BigDecimal;
 
@@ -16,13 +18,13 @@ public class FreightCalculatorUtilsTest {
     @Test
     public void shouldCalcMinimalShipping() {
         var distanceKm = new BigDecimal("1000");
-        assertEquals(new BigDecimal("10.00"), FreightCalculatorUtils.calculate(item1, distanceKm));
+        Assertions.assertEquals(new BigDecimal("10.00"), FreightCalculator.calculate(item1, distanceKm));
     }
 
     @Test
     public void shouldCalcNormalShipping() {
         var distanceKm = new BigDecimal("1000");
-        assertEquals(new BigDecimal("30.00"), FreightCalculatorUtils.calculate(item2, distanceKm));
+        assertEquals(new BigDecimal("30.00"), FreightCalculator.calculate(item2, distanceKm));
     }
 
     @BeforeAll

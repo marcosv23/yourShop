@@ -1,4 +1,4 @@
-package service;
+package domain.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +34,7 @@ public class OrderItem {
      */
     public OrderItem(int amount, double unitPrice, String description, BigDecimal height, BigDecimal width, BigDecimal depth, BigDecimal weight) {
         this.amount = amount;
-        this.unitPrice = new BigDecimal(unitPrice);
+        this.unitPrice = BigDecimal.valueOf(unitPrice);
         this.depth = depth;
         this.height = height;
         this.width = width;
