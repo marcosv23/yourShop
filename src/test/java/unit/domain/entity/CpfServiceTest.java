@@ -2,11 +2,12 @@ package unit.domain.entity;
 
 import domain.entity.CpfService;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CpfServiceTest {
+class CpfServiceTest {
     private static final String RAW_CPF = "111.444.777-05";
     private static final String INVALID_LENGTH_CPF = "415215515911";
     private static final String CPF1 = "11144477705";
@@ -18,56 +19,59 @@ public class CpfServiceTest {
     private static CpfService cpfService;
 
     @BeforeAll
-    public static void initTests() {
+    static void initTests() {
         cpfService = new CpfService();
     }
 
-    @Test
-    public void shouldAssureGetIntFromString() {
-        assertEquals(1, cpfService.getIntFromString('1'));
-    }
-
 
     @Test
-    public void shouldAssureLength() {
+    @DisplayName("Deve validar o tamanho do CPF")
+    void shouldAssureLength() {
         assertTrue(cpfService.validateLength(CPF1));
     }
 
     @Test
-    public void shouldAssureLengthIsLessThan11() {
+    @DisplayName("Não deve validar um cpf com mais de 11 caracteres")
+    void shouldAssureLengthIsLessThan11() {
         assertNotEquals(true, cpfService.validateLength(INVALID_LENGTH_CPF));
     }
 
     @Test
-    public void shouldCleanCPF() {
+    @DisplayName("Deve remover caracteres especiais do CPF")
+    void shouldCleanCPF() {
         assertEquals(CPF1, cpfService.cleanCpf(RAW_CPF));
     }
 
     @Test
-    public void shouldVerifySameDigits() {
+    @DisplayName("Deve verificar se todos os d[igitos são iguais")
+    void shouldVerifySameDigits() {
         assertTrue(cpfService.hasAllSameDigits("111111111"));
     }
 
 
     @Test
-    public void shouldNotHasSameDigits() {
+    @DisplayName("Não deve ter todos os dígitos repetidos")
+    void shouldNotHasSameDigits() {
         assertFalse(cpfService.hasAllSameDigits("11111511"));
     }
 
     @Test
-    public void shouldCalcFirstDigit() {
+    @DisplayName("Deve calcular o primeiro dígito")
+    void shouldCalcFirstDigit() {
         assertEquals(3, cpfService.calculateDigit(CPF1, 10));
         assertEquals(7, cpfService.calculateDigit(CPF2, 10));
     }
 
     @Test
-    public void shouldCalcSecondDigit() {
+    @DisplayName("Deve calcular o segundo dígito")
+    void shouldCalcSecondDigit() {
         assertEquals(5, cpfService.calculateDigit(CPF1WithFirstDigitCalculated, 11));
         assertEquals(9, cpfService.calculateDigit(CPF2WithFirstDigitCalculated, 11));
     }
 
     @Test
-    public void shouldCompareDigits() {
+    @DisplayName("Deve comparar os digitos")
+    void shouldCompareDigits() {
         assertTrue(cpfService.compareDigits(3, 5, CORRECT_CPF1));
         assertTrue(cpfService.compareDigits(7, 9, CORRECT_CPF2));
     }

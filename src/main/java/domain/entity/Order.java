@@ -2,9 +2,8 @@ package domain.entity;
 
 import exceptions.InvalidCouponException;
 import exceptions.InvalidCpfException;
-
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,28 +33,27 @@ public class Order {
         this.description = description;
         this.items = new ArrayList<>();
     }
-
     public void addItem(OrderItem item) {
         this.items.add(item);
     }
 
-    public void addCoupon(Coupon coupon, Instant date) {
-        if (!validateCoupon(coupon, date)) throw new InvalidCouponException();
-        totalPrice = calcPriceWithDiscount(coupon);
-    }
-
-    public boolean validateCoupon(Coupon coupon, Instant date) {
-        return Coupon.isValidCoupon(coupon, date);
+    public void addCoupon(Coupon coupon) {
+        if (!coupon.isValidCoupon()) throw new InvalidCouponException();
+        totalPrice = calcPriceWithDiscounts(coupon);
     }
 
     public BigDecimal calcPrice() {
-        return totalPrice = items.stream().map(OrderItem::getPrice).reduce(BigDecimal.valueOf(0), BigDecimal::add);
+        return items.stream().map(OrderItem::calcTotalPrice).reduce(BigDecimal.valueOf(0), BigDecimal::add);
     }
 
-    public BigDecimal calcPriceWithDiscount(Coupon coupon) {
+    public  BigDecimal calculateCouponDiscount(BigDecimal price, Coupon coupon) {
+        return price.multiply(coupon.getDecimalDiscount()).setScale(2, RoundingMode.FLOOR);
+    }
+
+    public BigDecimal calcPriceWithDiscounts(Coupon coupon) {
         totalPrice = calcPrice();
-        var discount = Coupon.calculateDiscount(totalPrice, coupon);
-        return totalPrice.subtract(discount);
+        var couponDiscount = calculateCouponDiscount(totalPrice, coupon);
+        return totalPrice.subtract(couponDiscount);
     }
 
     public boolean validateCpf(String cpf) {

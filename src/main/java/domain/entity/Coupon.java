@@ -2,9 +2,11 @@ package domain.entity;
 
 import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.Map;
 
@@ -12,30 +14,20 @@ import static utility.DateUtils.getInstantFromString;
 
 
 @Getter
+@Builder
 @AllArgsConstructor
-public enum Coupon {
-    GET10OFF(new BigDecimal("0.10"), "10% COUPON", getInstantFromString("2022-02-25T00:10:00")),
-    GET15OFF(new BigDecimal("0.15"), "15% COUPON", getInstantFromString("2022-02-21T01:19:00")),
-    GET30OFF(new BigDecimal("0.30"), "30% COUPON", getInstantFromString("2022-02-28T00:10:00"));
+public class Coupon {
     private final BigDecimal percentage;
     private final String description;
     private final Instant expirationDate;
-
-    private static final Map<BigDecimal, Coupon> index = Maps.newHashMapWithExpectedSize(Coupon.values().length);
-
-    static {
-        for (Coupon coupon : Coupon.values()) {
-            index.put(coupon.getPercentage(), coupon);
-        }
+    private static final BigDecimal PERCENTAGE_FACTOR_CONVERSION_FOR_DECIMAL =new BigDecimal(100);
+    
+    public BigDecimal getDecimalDiscount(){
+        return percentage.divide(PERCENTAGE_FACTOR_CONVERSION_FOR_DECIMAL).setScale(2, RoundingMode.FLOOR);
     }
 
-    public static boolean isValidCoupon(Coupon coupon, Instant date) {
-        var result = index.get(coupon.getPercentage());
-        return date.compareTo(result.getExpirationDate()) <= 0;
-    }
-
-
-    public static BigDecimal calculateDiscount(BigDecimal price, Coupon coupon) {
-        return price.multiply(coupon.getPercentage());
+    public  boolean isValidCoupon() {
+        var now = Instant.now();
+        return this.expirationDate.compareTo(now) > 0;
     }
 }

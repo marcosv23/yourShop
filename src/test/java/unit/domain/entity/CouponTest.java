@@ -3,23 +3,40 @@ package unit.domain.entity;
 
 import domain.entity.Coupon;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import utility.DateUtils;
-
-import java.text.ParseException;
-
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 class CouponTest {
 
     @Test
-    void shouldAllowValidCoupon() throws ParseException {
-        Assertions.assertTrue(Coupon.isValidCoupon(Coupon.GET15OFF, DateUtils.getInstantFromString("2022-02-21T00:00:00")));
+    @DisplayName("Deve permitir adicionar um cupom não expirado")
+    void shouldAllowValidCoupon() {
+        var now =  Instant.now();
+        var tomorrowDate = now.plus(1, ChronoUnit.DAYS);
+        var coupon = Coupon.builder()
+                        .description("COUPON BF FANTASTICA")
+                        .percentage(new BigDecimal("15"))
+                        .expirationDate(tomorrowDate)
+                        .build();
+        Assertions.assertTrue(coupon.isValidCoupon());
     }
 
     @Test
-    void shouldNotAllowExpiredCoupon() throws ParseException {
-        assertFalse(Coupon.isValidCoupon(Coupon.GET30OFF, DateUtils.getInstantFromString("2022-02-28T00:10:01")));
+    @DisplayName("Não deve permitir adicionar um cupom expirado")
+    void shouldNotAllowExpiredCoupon() {
+        var now =  Instant.now();
+        var tomorrowDate = now.minus(1, ChronoUnit.DAYS);
+        var coupon = Coupon.builder()
+                .description("COUPON BF FANTASTICA")
+                .percentage(new BigDecimal("15"))
+                .expirationDate(tomorrowDate)
+                .build();
+        assertFalse(coupon.isValidCoupon());
     }
 }

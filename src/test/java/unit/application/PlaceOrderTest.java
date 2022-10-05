@@ -31,7 +31,7 @@ public class PlaceOrderTest {
         var width = new BigDecimal("15");
         var depth = new BigDecimal("10");
         var weight = new BigDecimal("1");
-        var item = new OrderItem(3, 10, "Strawberry Cake", height, width, depth, weight);
+        var item = new OrderItem(3, new BigDecimal(10), "Strawberry Cake", height, width, depth, weight);
         var input = InputPlaceOrder.builder()
                 .cpf("645.216.850-99")
                 .items(List.of(item))
