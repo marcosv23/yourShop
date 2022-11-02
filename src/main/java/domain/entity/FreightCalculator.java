@@ -10,12 +10,12 @@ public class FreightCalculator {
     private FreightCalculator() {
     }
 
-    public static BigDecimal calculate(OrderItem item, BigDecimal distanceKm) {
+    public static BigDecimal calculate(Item item, BigDecimal distanceKm) {
         var normalValue = freightCalcFormula(item, distanceKm);
         return receivesMinimalFreight(normalValue) ? MINIMAL_SHIPPING_VALUE : normalValue;
     }
 
-    private static BigDecimal freightCalcFormula(OrderItem item, BigDecimal distanceKm) {
+    private static BigDecimal freightCalcFormula(Item item, BigDecimal distanceKm) {
         return distanceKm.multiply(item.getVolume()).multiply(divideDensityByFactor(item.getDensity()))
                 .setScale(2, RoundingMode.DOWN);
     }

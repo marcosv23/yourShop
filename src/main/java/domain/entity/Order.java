@@ -1,23 +1,25 @@
 package domain.entity;
 
-import exceptions.InvalidCouponException;
-import exceptions.InvalidCpfException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-
+import exceptions.ForbiddenActionException;
+import exceptions.InvalidCouponException;
+import exceptions.InvalidCpfException;
 import lombok.*;
 
 @Getter
 @Setter
 public class Order {
     private String cpf;
+
+    private  String code;
     private String description;
     private BigDecimal totalPrice;
-    private List<OrderItem> items;
+    private List<Item> items;
     private BigDecimal orderShipping;
-    private static final CpfService cpfService = new CpfService();
+    private static final Cpf CPF = new Cpf();
 
     public Order(String cpf) {
         if (validateCpf(cpf)) {
@@ -33,7 +35,8 @@ public class Order {
         this.description = description;
         this.items = new ArrayList<>();
     }
-    public void addItem(OrderItem item) {
+    public void addItem(Item item) {
+        if(items.stream().anyMatch(i->i.equals(item))) throw  new ForbiddenActionException("There is not permitted to add the same item twice");
         this.items.add(item);
     }
 
@@ -43,7 +46,7 @@ public class Order {
     }
 
     public BigDecimal calcPrice() {
-        return items.stream().map(OrderItem::calcTotalPrice).reduce(BigDecimal.valueOf(0), BigDecimal::add);
+        return items.stream().map(Item::calcTotalPrice).reduce(BigDecimal.valueOf(0), BigDecimal::add);
     }
 
     public  BigDecimal calculateCouponDiscount(BigDecimal price, Coupon coupon) {
@@ -57,7 +60,7 @@ public class Order {
     }
 
     public boolean validateCpf(String cpf) {
-        if (!cpfService.validate(cpf)) throw new InvalidCpfException();
+        if (!CPF.validate(cpf)) throw new InvalidCpfException();
         else return true;
     }
 

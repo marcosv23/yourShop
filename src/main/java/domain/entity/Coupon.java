@@ -1,6 +1,5 @@
 package domain.entity;
 
-import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,9 +7,6 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
-import java.util.Map;
-
-import static utility.DateUtils.getInstantFromString;
 
 
 @Getter
@@ -18,7 +14,7 @@ import static utility.DateUtils.getInstantFromString;
 @AllArgsConstructor
 public class Coupon {
     private final BigDecimal percentage;
-    private final String description;
+    private final String name;
     private final Instant expirationDate;
     private static final BigDecimal PERCENTAGE_FACTOR_CONVERSION_FOR_DECIMAL =new BigDecimal(100);
     

@@ -1,17 +1,15 @@
 package domain.entity;
 
 import exceptions.InvalidAttributeException;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
+import lombok.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 @Getter
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class OrderItem {
+public class Item {
     private final int quantity;
     private final BigDecimal unitPrice;
     private final String description;
@@ -25,10 +23,13 @@ public class OrderItem {
 
     private BigDecimal freight;
     private static final BigDecimal FACTOR_CONVERSION_CM3_TOM3 = new BigDecimal("1000000");
-    
-    
-    public static OrderItemBuilder builder() {
-        return new OrderItemBuilder();
+
+    @Setter
+    private String id ="";
+
+
+    public static ItemBuilder builder() {
+        return new ItemBuilder();
     }
     
     public BigDecimal calcTotalPrice() {
@@ -53,8 +54,23 @@ public class OrderItem {
     public BigDecimal toM3(BigDecimal volumeInC3) {
         return volumeInC3.divide(FACTOR_CONVERSION_CM3_TOM3);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Item item = (Item) o;
+        return unitPrice.equals(item.unitPrice)  && height.equals(item.height) && width.equals(item.width)  && weight.equals(item.weight);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(unitPrice, description, height, width, depth, weight);
+    }
+
+    //----
     
-    public static class OrderItemBuilder {
+    public static class ItemBuilder {
         private int quantity;
         private BigDecimal unitPrice;
         private String description;
@@ -66,68 +82,74 @@ public class OrderItem {
         private BigDecimal volume;
         private BigDecimal density;
         private BigDecimal freight;
+
+        private String id;
         
-        OrderItemBuilder() {
+        ItemBuilder() {
         }
-        
-        public OrderItemBuilder quantity(int quantity) {
+
+        public ItemBuilder id(String id){
+            this.id = id;
+            return this;
+        }
+        public ItemBuilder quantity(int quantity) {
             if(quantity <=0) throw new InvalidAttributeException("Invalid quantity: "+ quantity);
             this.quantity = quantity;
             return this;
         }
         
-        public OrderItemBuilder unitPrice(BigDecimal unitPrice) {
+        public ItemBuilder unitPrice(BigDecimal unitPrice) {
             if(unitPrice.intValueExact() <=0 ) throw new InvalidAttributeException("Invalid unitPrice: "+ unitPrice);
             this.unitPrice = unitPrice;
             return this;
         }
         
-        public OrderItemBuilder description(String description) {
+        public ItemBuilder description(String description) {
             this.description = description;
             return this;
         }
         
-        public OrderItemBuilder height(BigDecimal height) {
+        public ItemBuilder height(BigDecimal height) {
             if( height.intValueExact() <=0 ) throw new InvalidAttributeException("Invalid heigth: "+ unitPrice);
             this.height = height;
             return this;
         }
         
-        public OrderItemBuilder width(BigDecimal width) {
+        public ItemBuilder width(BigDecimal width) {
             if( width.intValueExact() <=0 ) throw new InvalidAttributeException("Invalid width: "+ width);
             this.width = width;
             return this;
         }
         
-        public OrderItemBuilder depth(BigDecimal depth) {
+        public ItemBuilder depth(BigDecimal depth) {
             if( depth.intValueExact() <=0 ) throw new InvalidAttributeException("Invalid depth: "+ depth);
             this.depth = depth;
             return this;
         }
         
-        public OrderItemBuilder weight(BigDecimal weight) {
+        public ItemBuilder weight(BigDecimal weight) {
             if( weight.intValueExact() <=0 ) throw new InvalidAttributeException("Invalid weight: "+ weight);
             this.weight = weight;
             return this;
         }
         
-        public OrderItemBuilder price(BigDecimal price) {
+        public ItemBuilder price(BigDecimal price) {
             if( price.intValueExact() <=0 ) throw new InvalidAttributeException("Invalid price: "+ price);
             this.price = price;
             return this;
         }
         
-        public OrderItemBuilder volume(BigDecimal volume) {
+        public ItemBuilder volume(BigDecimal volume) {
             this.volume = volume;
             return this;
         }
         
-        public OrderItemBuilder density(BigDecimal density) {
+        public ItemBuilder density(BigDecimal density) {
             this.density = density;
             return this;
         }
         
-        public OrderItemBuilder freight(BigDecimal freight) {
+        public ItemBuilder freight(BigDecimal freight) {
             this.freight = freight;
             return this;
         }
@@ -141,13 +163,18 @@ public class OrderItem {
          *  depth       in cm
          *  weight      in cm
          */
-        public OrderItem build() {
-            return new OrderItem(quantity, unitPrice, description, height, width, depth, weight, price, volume, density, freight);
+        public Item build() {
+            return new Item(quantity, unitPrice, description, height, width, depth, weight, price, volume, density, freight,id);
         }
         
         @Override
         public String toString() {
             return "OrderItem.OrderItemBuilder(quantity=" + this.quantity + ", unitPrice=" + this.unitPrice + ", description=" + this.description + ", height=" + this.height + ", width=" + this.width + ", depth=" + this.depth + ", weight=" + this.weight + ", price=" + this.price + ", volume=" + this.volume + ", density=" + this.density + ", freight=" + this.freight + ")";
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(description, height, width, depth, weight, price);
         }
     }
 }

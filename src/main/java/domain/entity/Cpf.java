@@ -2,7 +2,7 @@ package domain.entity;
 
 import jakarta.validation.constraints.NotNull;
 
-public class CpfService {
+public class Cpf {
     private static final int CPF_LENGTH = 11;
     private static final int ELEVEN_CONSTANT = 11;
 
