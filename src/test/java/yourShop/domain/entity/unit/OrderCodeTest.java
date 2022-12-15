@@ -1,6 +1,6 @@
 package yourShop.domain.entity.unit;
 
-import domain.entity.OrderCode;
+import domain.entity.order.OrderCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;

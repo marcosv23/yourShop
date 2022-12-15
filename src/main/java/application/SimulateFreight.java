@@ -7,14 +7,14 @@ import domain.repository.ItemRepository;
 import java.math.BigDecimal;
 
 public class SimulateFreight {
-    private final ItemRepository itemRepository;
+    private final ItemRepository ItemRepository;
 
-    public SimulateFreight(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
+    public SimulateFreight(ItemRepository ItemRepository) {
+        this.ItemRepository = ItemRepository;
     }
 
     public BigDecimal execute(FreightInput input){
-        var item = itemRepository.getItem(input.idItem());
+        var item = ItemRepository.getItem(input.idItem());
         return FreightCalculator.calculate(item, new BigDecimal(input.distanceKm()));
     }
 }

@@ -1,20 +1,20 @@
 package application;
 
 import application.input.checkout.CheckoutInputWithCodeDTO;
-import domain.entity.Order;
-import domain.entity.OrderCode;
+import domain.entity.order.Order;
+import domain.entity.order.OrderCode;
 import domain.repository.ItemRepository;
 import domain.repository.OrderRepository;
-import exceptions.ForbiddenActionException;
+import application.exceptions.ForbiddenActionException;
 import java.time.LocalDateTime;
 
 public class CheckoutWithOrderCode {
-    private final ItemRepository itemRepository;
-    private final OrderRepository orderRepository;
+    private final ItemRepository ItemRepository;
+    private final OrderRepository OrderRepository;
 
-    public CheckoutWithOrderCode(ItemRepository itemRepository, OrderRepository orderRepository) {
-        this.itemRepository = itemRepository;
-        this.orderRepository = orderRepository;
+    public CheckoutWithOrderCode(ItemRepository ItemRepository, OrderRepository OrderRepository) {
+        this.ItemRepository = ItemRepository;
+        this.OrderRepository = OrderRepository;
     }
 
     public void execute(CheckoutInputWithCodeDTO dto){
@@ -23,17 +23,17 @@ public class CheckoutWithOrderCode {
         if(!isValidOrderCode(dto.orderCode())) throw new ForbiddenActionException("This order " +
                 "code is invalid");
         dto.itemInputs().forEach(i->{
-            var item =itemRepository.getItem(i.itemId());
+            var item = ItemRepository.getItem(i.itemId());
             order.addItem(item);
             order.setCode(orderCode);
         });
-        orderRepository.save(order);
+        OrderRepository.save(order);
     }
 
     private boolean isValidOrderCode(String supposedCode){
-        var count = orderRepository.count();
+        var count = OrderRepository.count();
         var thisYear = String.valueOf(LocalDateTime.now().getYear());
-        var orderCode = OrderCode.generate(Integer.parseInt(thisYear),count.toString());
+        var orderCode = OrderCode.generate(Integer.parseInt(thisYear),String.valueOf(count));
         return supposedCode.equals(orderCode);
     }
 }

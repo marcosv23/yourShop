@@ -1,12 +1,12 @@
 package yourShop.domain.entity.unit;
 
-import domain.entity.Coupon;
-import domain.entity.Order;
-import domain.entity.Item;
-import exceptions.ForbiddenActionException;
-import exceptions.InvalidAttributeException;
-import exceptions.InvalidCouponException;
-import exceptions.InvalidCpfException;
+import domain.entity.coupon.Coupon;
+import domain.entity.order.Order;
+import domain.entity.item.Item;
+import application.exceptions.ForbiddenActionException;
+import application.exceptions.InvalidAttributeException;
+import application.exceptions.InvalidCouponException;
+import application.exceptions.InvalidCpfException;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -132,7 +132,7 @@ class OrderTest {
                 .expirationDate(Instant.now().plus(1, ChronoUnit.DAYS))
                 .build();
         order.addCoupon(coupon);
-        assertEquals(new BigDecimal("257.55"),order.getTotalPrice());
+        assertEquals(new BigDecimal("257.55"),order.getPrice());
     }
 
     @Test

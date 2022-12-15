@@ -1,6 +1,6 @@
 package domain.repository;
 
-import domain.entity.Item;
+import domain.entity.item.Item;
 
 import java.util.UUID;
 

@@ -1,5 +1,7 @@
 package domain.entity;
 
+import domain.entity.item.Item;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 

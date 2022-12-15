@@ -1,6 +1,6 @@
 package yourShop.domain.entity.unit;
 
-import domain.entity.Item;
+import domain.entity.item.Item;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

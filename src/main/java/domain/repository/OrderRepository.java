@@ -1,11 +1,12 @@
 package domain.repository;
 
-import domain.entity.Order;
+import domain.entity.order.Order;
 
 import java.util.List;
 
 public interface OrderRepository {
     List<Order > getByCpf(String cpf);
-    Integer count();
+    long count();
+    Integer countAsInt();
     void save(Order order);
 }

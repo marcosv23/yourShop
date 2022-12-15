@@ -3,7 +3,7 @@ package yourShop.utility;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import domain.entity.Item;
+import domain.entity.item.Item;
 import domain.entity.FreightCalculator;
 
 import java.math.BigDecimal;
